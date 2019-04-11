@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token
   before_save { self.email = email.downcase }
   validates :name, presence: true, length: { maximum: 50 }
@@ -18,6 +19,13 @@ class User < ApplicationRecord
   def User.new_token
     SecureRandom.urlsafe_base64
   end
+
+  # 試作feedの定義
+  # 完全な実装は次章の「ユーザーをフォローする」を参照
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
+
 
   # 永続セッションのためにユーザーをデータベースに記憶する
   def remember
